@@ -1,0 +1,17 @@
+Package: atlasIoT
+Type: Package
+Title: Custom package for managing the IoT data of Atlas Sensing Labs.
+Version: 0.1.0
+Author: Marloes Eeftens <marloes.eeftens@swisstph.ch> and Ming-Yi Tsai <mytsai2007@gmail.com>
+Maintainer: Marloes Eeftens <marloes.eeftens@swisstph.ch> 
+Description: atlasIoT helps manage the various data streams from the different IoT devices developed and run by Atlas Sensing Labs. It facilitates ongoing standardized data cleaning, modelling and visualization.
+License: GPL (>= 2)
+Depends: reshape2,
+  zoo,
+  lubridate,
+  chron,
+  ggplot2,
+  jsonlite,
+  data.table
+Encoding: UTF-8
+LazyData: true
