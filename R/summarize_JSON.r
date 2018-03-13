@@ -15,7 +15,6 @@ if(0){
   timevar = "created_at"
   idvar = "id"
   datavars = c("field1","field2","field3","field4","field5","field6","field7","field8")
-  dat1<-summarize_JSON(JSON_folder,pattern,summary_folder,ws_name,averaging_time,timevar,idvar,datavars)
   }
 
 summarize_JSON<-function(JSON_folder,pattern,summary_folder,ws_name,averaging_time,timevar,idvar,datavars){
@@ -49,8 +48,8 @@ summarize_JSON<-function(JSON_folder,pattern,summary_folder,ws_name,averaging_ti
       if(file.info(paste0(JSON_folder,files_to_process[i]))$size==0){
         files_disregarded<-c(files_disregarded,files_to_process[i])
       }else{
-      #See if file is empty, if not, read it in:
-      dat1<-read_json(paste0(JSON_folder,files_to_process[i]),simplifyVector=TRUE)
+        #See if file is empty, if not, read it in:
+        dat1<-read_json(paste0(JSON_folder,files_to_process[i]),simplifyVector=TRUE)
       }
 
       #TTN data:-------------------------------------------------------------------------------
@@ -88,7 +87,6 @@ summarize_JSON<-function(JSON_folder,pattern,summary_folder,ws_name,averaging_ti
           #Add file i to files_processed:
           files_processed<-c(files_processed,files_to_process[i])
         }
-
       #Thingspeak data:------------------------------------------------------------------------
       #If the file is made up of more than 1 dataframe (2+ lists, as Thingspeak json file are), dim is null:
       }else if(is.null(dim(dat1))){
@@ -98,13 +96,13 @@ summarize_JSON<-function(JSON_folder,pattern,summary_folder,ws_name,averaging_ti
         }
         #If the file does not have the right structure, disregards it and add to files_disregarded:
         #if(!all(c(timevar,idvar,datavars) %in% names(dat1))){
-        #removed idvar as this can at times be separate a separate dataframe (Thingspeak data) --need to improve
+        #removed idvar as this is in a separate dataframe with Thingspeak data
         if(!all(c(timevar,datavars) %in% names(dat1))){
           files_disregarded<-c(files_disregarded,files_to_process[i])
         #If in the right format, import and process:
         }else{
           dat1$posixtime<-as.POSIXct(strptime(dat1[,which(names(dat1)==timevar)],format="%Y-%m-%dT%H:%M:%S",tz="Europe/Zurich"))
-          dat1[,datavars] <- sapply(dat1[,datavars],as.numeric) #Thingspeak data are saved as characters, not numbers!
+          dat1[,datavars] <- sapply(dat1[,datavars],as.numeric) #Thingspeak data are saved as characters, convert to numbers!
           dat2<-subset(dat1,select=c("posixtime",datavars))
           dat2<-dat2[!duplicated(dat2$posixtime),]
           #Clean the data, set timepoints where all variables are zero to NA.
